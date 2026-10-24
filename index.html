@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>素算·开放式办公场景 P0.1（可走看）</title>
+  <title>素算·开放式办公场景 P0.2 M1（通透可走看）</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 100%; height: 100%; overflow: hidden; font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; background: #0a1628; color: #e8f4ff; }
@@ -59,7 +59,7 @@
       border-radius: 10px;
       padding: 12px 14px;
       font-size: 12px;
-      min-width: 220px; max-width: 280px;
+      min-width: 240px; max-width: 360px;
       backdrop-filter: blur(8px);
     }
     .legend h3 { font-size: 12px; color: #01F1E4; margin-bottom: 8px; font-weight: 600; }
@@ -72,6 +72,11 @@
       border: 1px solid rgba(138,180,212,0.4); border-radius: 3px;
       background: rgba(0,102,247,0.2); color: #c5d9eb; font-size: 10px;
       font-family: inherit;
+    }
+    .fidelity {
+      margin-top: 8px; padding-top: 8px;
+      border-top: 1px solid rgba(3,167,253,0.2);
+      color: #9ec3de; font-size: 11px; line-height: 1.55;
     }
 
     .panel {
@@ -200,7 +205,8 @@
       <h2>点击进入 · 可走看漫游</h2>
       <p><kbd style="border:1px solid #4a6a8a;padding:1px 5px;border-radius:3px">W A S D</kbd> 或方向键移动 · 鼠标环视</p>
       <p><kbd style="border:1px solid #4a6a8a;padding:1px 5px;border-radius:3px">Esc</kbd> 解锁鼠标 · 准星中央点击分区/文化墙</p>
-      <p style="color:#6a8aaa;font-size:11px;margin-top:8px">也可切到「俯视/轨道」模式查看全貌</p>
+      <p style="color:#6a8aaa;font-size:11px;margin-top:8px">也可切到「俯视/轨道」模式查看全貌。进入后面向文化墙正面。</p>
+      <p class="fidelity" style="border:none;padding-top:0;margin-top:10px;text-align:left">本轮：通透开放布局；材质/家具仍为程序化占位，非孪生级；非影视扫描重建。</p>
       <button class="go" id="btn-enter" type="button">进入场景</button>
     </div>
   </div>
@@ -214,8 +220,8 @@
         <path d="M12 18 H24 Q30 18 30 24" fill="none" stroke="#01F1E4" stroke-width="3.2" stroke-linecap="square"/>
       </svg>
       <div>
-        <h1>素算·开放式办公场景 P0.1（可走看）</h1>
-        <div class="sub">SuSuan · Open Office · First-person walk</div>
+        <h1>素算·开放式办公场景 P0.2 M1（通透可走看）</h1>
+        <div class="sub">SuSuan · Open plan · 程序化占位</div>
       </div>
     </div>
 
@@ -237,8 +243,9 @@
       <div class="hint" id="hint-text">
         <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 移动 · 鼠标环视<br>
         <kbd>Esc</kbd> 解锁 · 准星点击分区/文化墙<br>
-        半高墙工区 · 桌椅 · 广场台阶
+        通透开放 · 地毯色带 / 区牌 / 矮工位岛
       </div>
+      <div class="fidelity">本轮：通透开放布局；材质/家具仍为程序化占位，非孪生级；非影视扫描重建。</div>
     </div>
 
     <button class="culture-btn" id="btn-culture" type="button">文化墙</button>
@@ -311,7 +318,7 @@
 
     const PLAZA = { x: 0, z: 0, w: 12, d: 12 };
     const WALL = { x: 0, z: 10.5, w: 2.7, d: 0.55, h: 3.6 }; // 3:4 竖版 (2.7/3.6=0.75)，对齐声远终稿 1200×1600
-    const WALL_H = 2.8; // zone half-walls
+    // P0.2 M1：中心不再有半高隔断。分区只靠地面色带、地毯、区牌和矮工位岛。
 
     function makePresence(centerId) {
       const n = 2 + (centerId.charCodeAt(0) % 2);
@@ -331,7 +338,15 @@
 
     const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 200);
     const EYE_H = 1.65;
-    camera.position.set(0, EYE_H, 4);
+    // 广场北侧出生，yaw=π 朝 +Z，正对文化墙南立面
+    const SPAWN = { x: 0, z: 5.15, yaw: Math.PI };
+    function applyWalkCamera() {
+      camera.position.set(SPAWN.x, EYE_H, SPAWN.z);
+      camera.up.set(0, 1, 0);
+      camera.rotation.order = 'YXZ';
+      camera.rotation.set(0, SPAWN.yaw, 0);
+    }
+    applyWalkCamera();
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -375,12 +390,10 @@
       document.getElementById('mode-orbit').classList.toggle('active', mode === 'orbit');
       if (mode === 'walk') {
         orbitControls.enabled = false;
-        camera.position.set(0, EYE_H, 4);
-        camera.rotation.set(0, 0, 0);
-        camera.up.set(0, 1, 0);
+        applyWalkCamera();
         blocker.classList.remove('hidden');
         crosshair.classList.remove('visible');
-        hintText.innerHTML = '<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 移动 · 鼠标左右转向 / 上下俯仰（±70°）<br><kbd>Esc</kbd> 解锁 · 准星点击分区/文化墙<br>文化墙 3:4 竖版 · 区牌近 21:26';
+        hintText.innerHTML = '<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 移动 · 鼠标左右转向 / 上下俯仰（±70°）<br><kbd>Esc</kbd> 解锁 · 准星点击分区/文化墙<br>通透开放 · 地毯色带 / 区牌 / 矮工位岛 · 出生面向文化墙正面';
       } else {
         if (pointerControls.isLocked) pointerControls.unlock();
         blocker.classList.add('hidden');
@@ -626,25 +639,88 @@
       return group;
     }
 
-    function addWallSegment(x, y, z, w, h, d, color, opacity = 0.55) {
-      const geo = new THREE.BoxGeometry(w, h, d);
-      const mat = new THREE.MeshStandardMaterial({
-        color, roughness: 0.7, metalness: 0.12,
-        transparent: opacity < 1, opacity,
-      });
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.set(x, y, z);
-      mesh.castShadow = true;
+    function addFloorWash(x, z, w, d, color, opacity) {
+      const mesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(w, d),
+        new THREE.MeshStandardMaterial({
+          color, roughness: 0.98, metalness: 0,
+          transparent: true, opacity, depthWrite: false,
+        })
+      );
+      mesh.rotation.x = -Math.PI / 2;
+      mesh.position.set(x, 0.018, z);
       mesh.receiveShadow = true;
       scene.add(mesh);
-      // collider if thick enough
-      if (d >= 0.2 || w >= 0.2) {
-        colliders.push({
-          minX: x - w / 2 - 0.25, maxX: x + w / 2 + 0.25,
-          minZ: z - d / 2 - 0.25, maxZ: z + d / 2 + 0.25,
-        });
-      }
-      return mesh;
+    }
+
+    /** 地面色带 + 中心地毯。全部贴地，没有竖向墙。 */
+    function addCarpetPatch(cfg) {
+      const edge = new THREE.Color(cfg.color).lerp(new THREE.Color(0xf4f7fb), 0.55);
+      const band = new THREE.Mesh(
+        new THREE.PlaneGeometry(cfg.w + 0.72, cfg.d + 0.72),
+        new THREE.MeshStandardMaterial({ color: edge, roughness: 0.94, metalness: 0.02 })
+      );
+      band.rotation.x = -Math.PI / 2;
+      band.position.set(cfg.x, 0.024, cfg.z);
+      band.receiveShadow = true;
+      scene.add(band);
+
+      const carpet = new THREE.Mesh(
+        new THREE.PlaneGeometry(cfg.w, cfg.d),
+        new THREE.MeshStandardMaterial({
+          color: cfg.color, roughness: 0.96, metalness: 0.02,
+          polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1,
+        })
+      );
+      carpet.rotation.x = -Math.PI / 2;
+      carpet.position.set(cfg.x, 0.036, cfg.z);
+      carpet.receiveShadow = true;
+      carpet.userData = { type: 'center', ...cfg };
+      scene.add(carpet);
+      clickables.push(carpet);
+    }
+
+    function addPlanter(x, z) {
+      const g = new THREE.Group();
+      const pot = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.16, 0.13, 0.26, 10),
+        new THREE.MeshStandardMaterial({ color: 0x243240, roughness: 0.8 })
+      );
+      pot.position.y = 0.13;
+      pot.castShadow = true;
+      g.add(pot);
+      const leaf = new THREE.Mesh(
+        new THREE.SphereGeometry(0.2, 12, 10),
+        new THREE.MeshStandardMaterial({ color: 0x2c6a4e, roughness: 0.88 })
+      );
+      leaf.position.y = 0.38;
+      leaf.castShadow = true;
+      g.add(leaf);
+      g.position.set(x, 0, z);
+      scene.add(g);
+    }
+
+    function addIslandTable(x, z, w, d) {
+      const g = new THREE.Group();
+      const top = new THREE.Mesh(
+        new THREE.BoxGeometry(w, 0.06, d),
+        new THREE.MeshStandardMaterial({ color: 0x2a4058, roughness: 0.55, metalness: 0.12 })
+      );
+      top.position.y = 0.72;
+      top.castShadow = true;
+      top.receiveShadow = true;
+      g.add(top);
+      const legMat = new THREE.MeshStandardMaterial({ color: 0x1a2838, roughness: 0.8 });
+      const hx = Math.max(0.2, w / 2 - 0.12);
+      const hz = Math.max(0.12, d / 2 - 0.1);
+      [[-hx, -hz], [hx, -hz], [-hx, hz], [hx, hz]].forEach(([lx, lz]) => {
+        const leg = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.72, 0.06), legMat);
+        leg.position.set(lx, 0.36, lz);
+        leg.castShadow = true;
+        g.add(leg);
+      });
+      g.position.set(x, 0, z);
+      scene.add(g);
     }
 
     function addDesk(x, z, rotY = 0) {
@@ -663,7 +739,6 @@
         leg.castShadow = true;
         g.add(leg);
       });
-      // chair
       const seat = new THREE.Mesh(
         new THREE.BoxGeometry(0.45, 0.06, 0.45),
         new THREE.MeshStandardMaterial({ color: 0x1e3a55, roughness: 0.7 })
@@ -671,91 +746,65 @@
       seat.position.set(0, 0.45, 0.7);
       g.add(seat);
       const back = new THREE.Mesh(
-        new THREE.BoxGeometry(0.45, 0.45, 0.06),
+        new THREE.BoxGeometry(0.45, 0.42, 0.06),
         new THREE.MeshStandardMaterial({ color: 0x1e3a55, roughness: 0.7 })
       );
-      back.position.set(0, 0.7, 0.9);
+      back.position.set(0, 0.68, 0.9);
       g.add(back);
+      const stand = new THREE.Mesh(
+        new THREE.BoxGeometry(0.05, 0.14, 0.05),
+        new THREE.MeshStandardMaterial({ color: 0x1a2838, roughness: 0.7 })
+      );
+      stand.position.set(0, 0.86, -0.2);
+      g.add(stand);
+      const screen = new THREE.Mesh(
+        new THREE.BoxGeometry(0.46, 0.26, 0.025),
+        new THREE.MeshStandardMaterial({ color: 0x101c2c, roughness: 0.45, metalness: 0.2 })
+      );
+      screen.position.set(0, 1.02, -0.2);
+      screen.castShadow = true;
+      g.add(screen);
       g.position.set(x, 0, z);
       g.rotation.y = rotY;
       scene.add(g);
     }
 
-    function addZone(cfg) {
-      const padH = 0.08;
-      const pad = new THREE.Mesh(
-        new THREE.BoxGeometry(cfg.w, padH, cfg.d),
-        new THREE.MeshStandardMaterial({ color: cfg.color, roughness: 0.75, metalness: 0.1, transparent: true, opacity: 0.45 })
-      );
-      pad.position.set(cfg.x, padH / 2, cfg.z);
-      pad.receiveShadow = true;
-      pad.userData = { type: 'center', ...cfg };
-      scene.add(pad);
-      clickables.push(pad);
+    /** 矮工位岛：共享桌 + 桌椅，最高约 1.15m，视线从 1.65m 眼高穿过去。 */
+    function addOpenFurnishings(cfg) {
+      const tw = Math.min(2.05, Math.max(1.15, cfg.w * 0.28));
+      const td = Math.min(0.82, Math.max(0.6, cfg.d * 0.14));
+      addIslandTable(cfg.x, cfg.z, tw, td);
 
-      // Half-height perimeter walls (open doorway on plaza-facing side)
-      const t = 0.22;
-      const hx = cfg.w / 2, hz = cfg.d / 2;
-      const wallColor = cfg.color;
-      // back wall (far from plaza roughly — full)
-      addWallSegment(cfg.x, WALL_H / 2, cfg.z - hz + t / 2, cfg.w, WALL_H, t, wallColor, 0.62);
-      addWallSegment(cfg.x, WALL_H / 2, cfg.z + hz - t / 2, cfg.w * 0.35, WALL_H, t, wallColor, 0.55);
-      addWallSegment(cfg.x - hx * 0.55, WALL_H / 2, cfg.z + hz - t / 2, cfg.w * 0.28, WALL_H, t, wallColor, 0.55);
-      // side walls
-      addWallSegment(cfg.x - hx + t / 2, WALL_H / 2, cfg.z, t, WALL_H, cfg.d - 0.4, wallColor, 0.5);
-      addWallSegment(cfg.x + hx - t / 2, WALL_H / 2, cfg.z, t, WALL_H, cfg.d - 0.4, wallColor, 0.5);
-
-      // Edge highlight on pad
-      const edges = new THREE.EdgesGeometry(new THREE.BoxGeometry(cfg.w, 0.02, cfg.d));
-      const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.3 }));
-      line.position.set(cfg.x, padH + 0.02, cfg.z);
-      scene.add(line);
-
-      // Desks (2–3 per zone)
       const deskCount = cfg.w > 9 ? 3 : 2;
+      const row = Math.max(cfg.d * 0.2, 1.15);
+      const outer = cfg.z >= 0 ? 1 : -1;
+      const rot = outer > 0 ? 0 : Math.PI;
       for (let i = 0; i < deskCount; i++) {
-        const ox = (i - (deskCount - 1) / 2) * (cfg.w * 0.28);
-        addDesk(cfg.x + ox, cfg.z - 0.5, Math.PI);
+        const ox = (i - (deskCount - 1) / 2) * (cfg.w * 0.26);
+        addDesk(cfg.x + ox, cfg.z + outer * row, rot);
       }
+      if (deskCount >= 3) {
+        addDesk(
+          cfg.x + cfg.w * 0.18,
+          cfg.z - outer * Math.min(row * 0.72, cfg.d * 0.2),
+          rot + Math.PI
+        );
+      }
+      addPlanter(cfg.x - cfg.w * 0.36, cfg.z - outer * cfg.d * 0.28);
 
-      // Clickable volume (invisible taller box for raycast)
-      const hit = new THREE.Mesh(
-        new THREE.BoxGeometry(cfg.w * 0.9, WALL_H, cfg.d * 0.9),
-        new THREE.MeshBasicMaterial({ visible: false })
-      );
-      hit.position.set(cfg.x, WALL_H / 2, cfg.z);
-      hit.userData = { type: 'center', ...cfg };
-      scene.add(hit);
-      clickables.push(hit);
-
-      // 区牌立板（入口朝广场一侧） + 头顶精灵兜底
-      const plaque = makePlaquePlane(cfg);
-      const towardPlaza = Math.atan2(-cfg.z, -cfg.x); // face roughly plaza
-      // 放在工区朝广场的开口附近
-      const px = cfg.x + Math.sin(towardPlaza) * (cfg.w * 0.15);
-      const pz = cfg.z + Math.cos(towardPlaza) * (cfg.d * 0.42);
-      plaque.position.set(cfg.x, 1.35, cfg.z + (cfg.z >= 0 ? -cfg.d * 0.48 : cfg.d * 0.48));
-      plaque.lookAt(0, 1.35, 0);
-      scene.add(plaque);
-
-      const spr = makePlaqueSprite(cfg);
-      spr.position.set(cfg.x, WALL_H + 0.85, cfg.z);
-      scene.add(spr);
-
-      // Presence dots floating above desks
       const presence = PRESENCE[cfg.id] || [];
       presence.forEach((p, i) => {
-        const spacing = 1.1;
+        const spacing = Math.min(1.15, cfg.w * 0.22);
         const ox = (i - (presence.length - 1) / 2) * spacing;
         const dot = new THREE.Mesh(
-          new THREE.SphereGeometry(0.22, 14, 14),
+          new THREE.SphereGeometry(0.16, 14, 14),
           new THREE.MeshStandardMaterial({
             color: p.onDuty ? 0x3dd68c : 0x6a7a8a,
             emissive: p.onDuty ? 0x1a5a3a : 0x222830,
-            emissiveIntensity: 0.55, roughness: 0.4,
+            emissiveIntensity: 0.45, roughness: 0.45,
           })
         );
-        dot.position.set(cfg.x + ox, 1.35, cfg.z + cfg.d * 0.22);
+        dot.position.set(cfg.x + ox, 1.12, cfg.z + outer * row);
         scene.add(dot);
         setInterval(() => {
           p.onDuty = !p.onDuty;
@@ -766,9 +815,40 @@
       });
     }
 
+    function addZone(cfg) {
+      addCarpetPatch(cfg);
+      addOpenFurnishings(cfg);
+
+      // 不可见拾取体，方便准星点中工位岛；不参与碰撞，也不是房间盒子
+      const hitH = 1.5;
+      const hit = new THREE.Mesh(
+        new THREE.BoxGeometry(cfg.w * 0.92, hitH, cfg.d * 0.92),
+        new THREE.MeshBasicMaterial({ visible: false })
+      );
+      hit.position.set(cfg.x, hitH / 2, cfg.z);
+      hit.userData = { type: 'center', ...cfg };
+      scene.add(hit);
+      clickables.push(hit);
+
+      const plaque = makePlaquePlane(cfg);
+      const plazaZ = cfg.z >= 0 ? -cfg.d * 0.46 : cfg.d * 0.46;
+      plaque.position.set(cfg.x, 1.35, cfg.z + plazaZ);
+      plaque.lookAt(0, 1.35, 0);
+      scene.add(plaque);
+
+      const spr = makePlaqueSprite(cfg);
+      spr.position.set(cfg.x, 2.5, cfg.z);
+      scene.add(spr);
+    }
+
+    // 同簇地面色带：透明贴地，巷道仍然能走、能看穿
+    addFloorWash(-14, 1, 12, 18.5, CLUSTER.delivery, 0.2);
+    addFloorWash(14, 1, 12, 18.5, CLUSTER.delivery, 0.2);
+    addFloorWash(0, 16.2, 21, 8.6, CLUSTER.narrative, 0.18);
+
     CENTERS.forEach(addZone);
 
-    // 开放领导岛（战略治理 · 不设办公室门牌）
+    // 开放领导岛：与各中心一样，只有地毯和矮工位，不设隔断
     {
       const cfg = {
         id: 'lead', name: '开放领导岛', nick: 'Moral', plaque: 'Moral · 算衡',
@@ -777,37 +857,31 @@
         x: 2, z: -10, w: 6, d: 5,
         asset: 'assets/plaques/区牌-开放领导岛-透明底.png',
       };
-      const padH = 0.08;
-      const pad = new THREE.Mesh(
-        new THREE.BoxGeometry(cfg.w, padH, cfg.d),
-        new THREE.MeshStandardMaterial({ color: 0x152a44, roughness: 0.7, metalness: 0.1, transparent: true, opacity: 0.55 })
-      );
-      pad.position.set(cfg.x, padH / 2, cfg.z);
-      pad.userData = { type: 'center', ...cfg };
-      scene.add(pad);
-      clickables.push(pad);
-      const hit = new THREE.Mesh(
-        new THREE.BoxGeometry(cfg.w * 0.9, 2.2, cfg.d * 0.9),
-        new THREE.MeshBasicMaterial({ visible: false })
-      );
-      hit.position.set(cfg.x, 1.1, cfg.z);
-      hit.userData = { type: 'center', ...cfg };
-      scene.add(hit);
-      clickables.push(hit);
-      const plaque = makePlaquePlane(cfg);
-      plaque.position.set(cfg.x, 1.35, cfg.z + cfg.d * 0.48);
-      plaque.lookAt(0, 1.35, 0);
-      scene.add(plaque);
-      const spr = makePlaqueSprite(cfg);
-      spr.position.set(cfg.x, 3.2, cfg.z);
-      scene.add(spr);
+      addCarpetPatch(cfg);
       PRESENCE[cfg.id] = [
         { label: 'Moral', onDuty: true },
         { label: '算衡', onDuty: true },
       ];
+      addOpenFurnishings(cfg);
+      const hitH = 1.5;
+      const hit = new THREE.Mesh(
+        new THREE.BoxGeometry(cfg.w * 0.92, hitH, cfg.d * 0.92),
+        new THREE.MeshBasicMaterial({ visible: false })
+      );
+      hit.position.set(cfg.x, hitH / 2, cfg.z);
+      hit.userData = { type: 'center', ...cfg };
+      scene.add(hit);
+      clickables.push(hit);
+      const plaque = makePlaquePlane(cfg);
+      plaque.position.set(cfg.x, 1.35, cfg.z + cfg.d * 0.46);
+      plaque.lookAt(0, 1.35, 0);
+      scene.add(plaque);
+      const spr = makePlaqueSprite(cfg);
+      spr.position.set(cfg.x, 2.5, cfg.z);
+      scene.add(spr);
     }
 
-    // Central plaza with steps
+        // Central plaza with steps
     {
       const base = new THREE.Mesh(
         new THREE.BoxGeometry(PLAZA.w, 0.12, PLAZA.d),
@@ -976,7 +1050,9 @@
         new THREE.PlaneGeometry(faceW, faceH),
         faceMat
       );
-      face.position.set(WALL.x, WALL.h * 0.52, WALL.z + WALL.d / 2 + 0.03);
+      // 南立面朝广场。绕 Y 转 180° 后正面法线指向 -Z，访客从南侧阅读，文案不镜像。
+      face.position.set(WALL.x, WALL.h * 0.52, WALL.z - WALL.d / 2 - 0.06);
+      face.rotation.y = Math.PI;
       scene.add(face);
 
       /** 贴图按固有宽高比 contain 进 3:4 面板（不 stretch） */
@@ -1061,7 +1137,7 @@
         <span class="tag">协作空间</span>
         <div class="section">
           <div class="section-label">说明</div>
-          <div>全开放式办公的中央协作广场，带台阶与地面材质区分。四周环绕十大中心工区。跨中心沟通与临时协作的视觉焦点（P0.1 示意）。</div>
+          <div>全开放式办公的中央协作广场，带台阶与地面材质区分。四周是通透工位岛（地面色带、地毯、区牌、矮桌椅），视线可以穿过楼层，没有隔断墙。</div>
         </div>
       `;
       panel.classList.add('visible');
