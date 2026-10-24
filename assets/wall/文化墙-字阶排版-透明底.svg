@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1800" viewBox="0 0 1200 1800">
+  <defs>
+    <style>
+      .title{font:700 48px "Noto Sans CJK SC",sans-serif;fill:#0066F7}
+      .h{font:700 28px "Noto Sans CJK SC",sans-serif;fill:#1C2330}
+      .b{font:400 24px "Noto Sans CJK SC",sans-serif;fill:#1C2330}
+      .m{font:400 18px "Noto Sans CJK SC",sans-serif;fill:#5A6473}
+      .vt{font:700 22px "Noto Sans CJK SC",sans-serif;fill:#0066F7}
+      .vb{font:400 18px "Noto Sans CJK SC",sans-serif;fill:#5A6473}
+    </style>
+  </defs>
+  <!-- left accent -->
+  <rect x="40" y="40" width="8" height="1720" fill="#0066F7"/>
+  <!-- abstract logo polyline -->
+  <polyline points="80,90 110,60 140,90 170,60 200,90" fill="none" stroke="#0066F7" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="80,90 110,120 140,90 170,120 200,90" fill="none" stroke="#03A7FD" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="80" y="170" class="m">① Logo · 官方三段蓝青几何 S</text>
+  <text x="80" y="230" class="m">② Slogan</text>
+  <text x="80" y="290" class="title">智取要素｜能在计算</text>
+  <text x="80" y="360" class="m">③ 企业介绍</text>
+  <text x="80" y="400" class="b">素算科技是一家 AI 创意科技公司，主攻 AI 产业智能体系统研发。</text>
+  <text x="80" y="438" class="b">我们以智能体重构企业开发与设计方式，在真实业务场景中运营反馈、持续迭代。</text>
+  <text x="80" y="510" class="m">④ 使命</text>
+  <text x="80" y="555" class="h">用 AI 产业智能体，让企业能力可组装、可计算、可增长。</text>
+  <text x="80" y="625" class="m">⑤ 愿景</text>
+  <text x="80" y="670" class="h">成为企业信赖的 AI 产业智能体基础设施。</text>
+  <text x="80" y="740" class="m">⑥ 价值观</text>
+  <circle cx="92" cy="790" r="6" fill="#01F1E4"/>
+  <text x="112" y="796" class="vt">可计算</text>
+  <text x="112" y="826" class="vb">用数据与模型，把业务说清楚、算明白</text>
+  <circle cx="92" cy="880" r="6" fill="#01F1E4"/>
+  <text x="112" y="886" class="vt">场景共创</text>
+  <text x="112" y="916" class="vb">在真实运营中打磨，不空谈概念</text>
+  <circle cx="92" cy="970" r="6" fill="#01F1E4"/>
+  <text x="112" y="976" class="vt">克制真诚</text>
+  <text x="112" y="1006" class="vb">不夸大能力，不上未确认的承诺</text>
+  <circle cx="92" cy="1060" r="6" fill="#01F1E4"/>
+  <text x="112" y="1066" class="vt">客户超预期</text>
+  <text x="112" y="1096" class="vb">以交付结果说话</text>
+  <text x="80" y="1180" class="m">⑦ 落款</text>
+  <rect x="80" y="1200" width="56" height="14" rx="3" fill="#0066F7"/>
+  <rect x="150" y="1200" width="56" height="14" rx="3" fill="#01F1E4"/>
+  <rect x="220" y="1200" width="56" height="14" rx="3" fill="#03A7FD"/>
+  <text x="300" y="1214" class="m">susuan.cc</text>
+  <text x="80" y="1280" class="m">字阶：Slogan &gt; 使命/愿景 &gt; 介绍 &gt; 价值观释文 · 正文 #1C2330 · 品牌色点睛</text>
+</svg>
