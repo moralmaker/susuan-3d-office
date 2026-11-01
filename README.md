@@ -1,12 +1,14 @@
-# SuSuan 3D office P0.2
+# 素算 · 开放总部沙盘
 
-素算科技开放式办公的静态第一人称 WebGL 场景（Pointer Lock + WASD）。无后端、无登录、无私人业务数据。
+素算科技开放式总部的静态 WebGL 场景（步行 + 环绕 + 俯瞰）。无后端、无登录、无私人业务数据。
 
-## 本轮范围（P0.2 孪生观感）
+## 本轮范围（HQ 级实时沙盘）
 
-本轮：通透布局 + PBR/灯光 + 开源 GLTF 家具；实时 WebGL 孪生观感；非影视级扫描重建。
+逼真度边界：对标 HQ 级实时 WebGL 总部沙盘观感（回字开放总部、中央核心、PBR 光影与视角切换）。非影视扫描重建；未复制 [agent-display](https://github.com/cyberdaddyleo/agent-display) 源码（该仓为 PolyForm Noncommercial，本实现为自研几何、材质与布局）。
 
-各中心没有高隔断。分区靠地面色带、地毯、区牌和矮工位岛表示，眼高 1.65m 可以越过桌椅（桌面约 0.75m）看到整个楼层。文化墙贴图源、文案和 3:4（1200×1600）contain 未改；默认出生点在广场北侧，面向文化墙南立面。
+各中心没有高隔断。回字楼板把中央核心（会议长桌 + 开放领导岛）和四周中心簇分开，分区靠石材走道、编织地毯、簇色细框和区牌表示。眼高 1.65m 可以越过桌椅（桌面约 0.75m）看到整个楼层。文化墙贴图源、文案和 3:4（1200×1600）contain 未改；默认出生点在广场北侧，面向文化墙南立面。
+
+帧率持续低于约 28fps 时会自动降到均衡（关辉光、阴影 1024）或流畅（关阴影）。可用 `?cam=walk|orbit|top` 直接进入对应视角，`?shot=1` 跳过点击进入，便于截图。
 
 ## Live
 
@@ -30,8 +32,9 @@ Three.js `0.160.0` 从 jsDelivr 加载。墙面、区牌、家具使用 `assets/
 | WASD / arrow keys | Move |
 | Mouse | Look around, pitch ±70° |
 | Esc | Release the pointer |
+| `1` / `2` / `3` | 步行 / 环绕 / 俯瞰 |
+| Top bar | Same three cameras; 环绕 idles into a slow turn |
 | Click the crosshair | Open a zone, plaza, or culture-wall panel |
-| Top bar「俯视/轨道」 | Orbit overview |
 | 「文化墙」 | Brand copy |
 
 ## 模型与授权
